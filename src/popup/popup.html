@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comparador Krowdy</title>
+  <style>
+    body { width: 400px; height: 500px; font-family: sans-serif; margin: 0; padding: 16px; background-color: #f3f4f6; }
+    h1 { font-size: 1.25rem; font-weight: bold; color: #1f2937; margin-bottom: 16px; }
+    
+    .input-group { display: flex; gap: 8px; margin-bottom: 24px; }
+    input { flex: 1; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; outline: none; }
+    input:focus { border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2); }
+    .btn-add { background-color: #4f46e5; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+    .btn-add:hover { background-color: #4338ca; }
+
+    #keywordsList { display: flex; flex-direction: column; gap: 12px; }
+    
+    .card { background: white; padding: 12px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e5e7eb; }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .term { font-weight: bold; font-size: 1.1rem; color: #111827; }
+    .btn-delete { color: #ef4444; background: none; border: none; cursor: pointer; font-size: 0.9rem; }
+    .btn-delete:hover { color: #dc2626; text-decoration: underline; }
+
+    .site-row { display: flex; align-items: center; justify-content: space-between; padding: 8px; border-radius: 6px; margin-bottom: 8px; }
+    .site-falabella { background-color: #ecfdf5; border: 1px solid #d1fae5; }
+    .site-ml { background-color: #fefce8; border: 1px solid #fef9c3; }
+
+    .site-name { font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; }
+    .text-green { color: #065f46; }
+    .text-yellow { color: #854d0e; }
+
+    .status-badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.8); font-weight: bold; margin-left: 8px; }
+    
+    .controls { display: flex; align-items: center; gap: 8px; }
+    .count { background: white; padding: 2px 8px; border-radius: 4px; font-family: monospace; font-size: 0.9rem; border: 1px solid #e5e7eb; }
+    
+    .btn-search { border: none; color: white; padding: 4px 12px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; font-weight: 500; }
+    .btn-search.falabella { background-color: #059669; }
+    .btn-search.falabella:hover { background-color: #047857; }
+    .btn-search.ml { background-color: #ca8a04; }
+    .btn-search.ml:hover { background-color: #a16207; }
+    .btn-search:disabled { background-color: #9ca3af; cursor: not-allowed; }
+
+    .status-running { color: #2563eb; }
+    .status-done { color: #059669; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Comparador de Precios</h1>
+
+  <div class="input-group">
+    <input type="text" id="keywordInput" placeholder="Ej: Monitor Gamer">
+    <button id="addBtn" class="btn-add">+</button>
+  </div>
+
+  <div id="keywordsList"></div>
+
+  <template id="keywordTemplate">
+    <div class="card">
+      <div class="card-header">
+        <span class="term">Termino</span>
+        <button class="btn-delete">Eliminar</button>
+      </div>
+      
+      <div class="site-row site-falabella">
+        <div style="display: flex; align-items: center;">
+          <span class="site-name text-green">Falabella</span>
+          <span class="status-badge status-falabella">IDLE</span>
+        </div>
+        <div class="controls">
+          <span class="count count-falabella">0</span>
+          <button class="btn-search falabella btn-falabella">Buscar</button>
+        </div>
+      </div>
+
+      <div class="site-row site-ml">
+        <div style="display: flex; align-items: center;">
+          <span class="site-name text-yellow">MercadoLibre</span>
+          <span class="status-badge status-ml">IDLE</span>
+        </div>
+        <div class="controls">
+          <span class="count count-ml">0</span>
+          <button class="btn-search ml btn-ml">Buscar</button>
+        </div>
+      </div>
+    </div>
+  </template>
+  <script type="module" src="/src/popup/popup.ts"></script>
+</body>
+</html>
