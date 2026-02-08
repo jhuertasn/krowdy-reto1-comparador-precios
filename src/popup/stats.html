@@ -3,54 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Estadísticas Krowdy</title>
-  <link rel="stylesheet" href="/tailwind.css">
-  <style>body { width: 800px; height: 600px; background-color: #f9fafb; padding: 20px; }</style>
+  <title>Krowdy Analytics</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"> <!-- CDN para Tailwind si no tienes el archivo local -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- CDN para Chart.js -->
+  <style>
+    body { background-color: #f3f4f6; min-height: 100vh; font-family: sans-serif; }
+    .header-custom { background-color: #111827 !important; color: white !important; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #f1f1f1; }
+    ::-webkit-scrollbar-thumb { background: #c7c7c7; border-radius: 4px; }
+    tr:hover td { background-color: #f9fafb; }
+    td { color: #374151; }
+  </style>
 </head>
-<body>
-  
-  <div class="mb-6 flex justify-between items-center">
-    <h1 class="text-2xl font-bold text-gray-800">📊 Análisis: <span id="keywordTitle" class="text-indigo-600">...</span></h1>
-  </div>
+<body class="text-gray-800">
 
-  <div class="grid grid-cols-3 gap-4 mb-6">
-    <div class="bg-white p-4 rounded shadow border-l-4 border-green-500">
-      <h3 class="text-xs font-bold text-gray-500 uppercase">Falabella</h3>
-      <p class="text-2xl font-bold mt-1" id="avgFala">--</p>
-      <p class="text-xs text-gray-400">Precio Promedio</p>
-    </div>
-    <div class="bg-white p-4 rounded shadow border-l-4 border-yellow-500">
-      <h3 class="text-xs font-bold text-gray-500 uppercase">MercadoLibre</h3>
-      <p class="text-2xl font-bold mt-1" id="avgML">--</p>
-      <p class="text-xs text-gray-400">Precio Promedio</p>
-    </div>
-    <div class="bg-white p-4 rounded shadow border-l-4 border-indigo-600">
-      <h3 class="text-xs font-bold text-gray-500 uppercase">Recomendación</h3>
-      <p class="text-lg font-bold mt-1 text-indigo-700 leading-tight" id="recommendation">Calculando...</p>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-2 gap-4 h-[350px]">
-    <div class="bg-white p-4 rounded shadow">
-      <canvas id="priceChart"></canvas>
-    </div>
-    <div class="bg-white p-4 rounded shadow flex flex-col">
-      <h3 class="font-bold text-gray-700 mb-2">🏆 Top 5 Más Baratos</h3>
-      <div class="overflow-y-auto flex-1">
-        <table class="w-full text-sm text-left">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-            <tr>
-              <th class="px-2 py-1">Tienda</th>
-              <th class="px-2 py-1">Producto</th>
-              <th class="px-2 py-1">Precio</th>
-            </tr>
-          </thead>
-          <tbody id="topDealsBody"></tbody>
-        </table>
+  <div class="header-custom py-6 shadow-md" style="background-color: #111827;">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+      <div>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">📊 Reporte de Precios</h1>
+        <p class="text-gray-400 text-xs mt-1">Análisis inteligente de mercado</p>
+      </div>
+      
+      <div class="text-left sm:text-right">
+        <span class="text-gray-500 text-xs uppercase font-bold block mb-1">Búsqueda:</span>
+        <div id="keywordTitle" class="text-2xl sm:text-4xl font-black text-indigo-400 capitalize tracking-tight" style="color: #818cf8;">...</div>
       </div>
     </div>
   </div>
 
-  <script type="module" src="/src/popup/stats.ts"></script>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-xl shadow-sm p-4 sm:p-5 border-l-4 border-green-500 relative">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-xs font-bold text-gray-400 uppercase">Falabella</p>
+            <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800" id="avgFala">--</h3>
+            <p class="text-xs text-green-600 font-medium mt-1">Precio Mediana</p> </div>
+          <div class="bg-green-50 p-2 rounded-lg">
+             <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+          </div>
+        </div>
+        <div class="mt-4 flex justify-between text-xs text-gray-500 border-t pt-3">
+          <div>Min: <span id="minFala" class="font-bold text-gray-700">--</span></div>
+          <div>Max: <span id="maxFala" class="font-bold text-gray-700">--</span></div>
+          <div>Nº: <span id="countFala" class="font-bold text-gray-700">0</span></div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm p-4 sm:p-5 border-l-4 border-yellow-500 relative">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-xs font-bold text-gray-400 uppercase">Mercado Libre</p>
+            <h3 class="text-xl sm:text-2xl font-bold mt-1 text-gray-800" id="avgML">--</h3>
+            <p class="text-xs text-yellow-600 font-medium mt-1">Precio Mediana</p> </div>
+          <div class="bg-yellow-50 p-2 rounded-lg">
+            <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          </div>
+        </div>
+        <div class="mt-4 flex justify-between text-xs text-gray-500 border-t pt-3">
+          <div>Min: <span id="minML" class="font-bold text-gray-700">--</span></div>
+          <div>Max: <span id="maxML" class="font-bold text-gray-700">--</span></div>
+          <div>Nº: <span id="countML" class="font-bold text-gray-700">0</span></div>
+        </div>
+      </div>
+
+      <div class="rounded-xl shadow-lg p-4 sm:p-5 text-white" style="background: linear-gradient(to bottom right, #4f46e5, #7e22ce);">
+        <div class="flex flex-col h-full justify-between">
+          <div>
+            <p class="text-indigo-200 text-xs font-bold uppercase" style="color: #e0e7ff;">Veredicto</p>
+            <h3 class="text-lg sm:text-xl font-bold mt-2 leading-snug" id="recommendation" style="color: white;">...</h3>
+          </div>
+          <div class="mt-4 p-3 rounded-lg backdrop-blur-sm" style="background-color: rgba(255,255,255,0.1);">
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-medium" id="savingText" style="color: #fef08a;">...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" style="min-height: 400px; height: auto;">
+      <div class="bg-white p-4 sm:p-5 rounded-xl shadow-sm border border-gray-100 flex flex-col h-full">
+        <h3 class="font-bold text-gray-700 mb-4 text-sm sm:text-base" style="color: #374151;">Comparativa Visual (Mediana)</h3>
+        <div class="flex-1 relative w-full" style="min-height: 250px;">
+          <canvas id="priceChart"></canvas>
+        </div>
+      </div>
+
+      <div class="bg-white p-0 rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden h-full">
+        <div class="p-4 sm:p-5 border-b border-gray-100 bg-gray-50">
+          <h3 class="font-bold text-gray-700 text-sm sm:text-base" style="color: #374151;">🏆 Top 5 Mejores Ofertas</h3>
+        </div>
+        <div class="overflow-y-auto flex-1 p-0">
+          <table class="w-full text-sm text-left">
+            <thead class="text-xs text-gray-500 uppercase bg-gray-50 sticky top-0">
+              <tr>
+                <th class="px-3 sm:px-5 py-3 font-medium">Producto</th>
+                <th class="px-3 sm:px-5 py-3 font-medium text-center">Tienda</th>
+                <th class="px-3 sm:px-5 py-3 font-medium text-right">Precio</th>
+              </tr>
+            </thead>
+            <tbody id="topDealsBody" class="divide-y divide-gray-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script type="module" src="stats.ts"></script>
 </body>
 </html>

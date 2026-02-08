@@ -37,7 +37,7 @@ function extraerProductos(keyword: string): Product[] {
         title: nombre || 'Sin nombre',
         priceVisible: precioLine,
         priceNumeric: isNaN(precioNum) ? 0 : precioNum,
-        url: window.location.href, // Falabella complica sacar la URL individual a veces
+        url: el.querySelector('a')?.href || window.location.href, // Falabella complica sacar la URL individual a veces
         brand: marca
     };
   });
