@@ -40,15 +40,21 @@ async function iniciarBusquedaBackground(keyword: string, site: 'falabella' | 'm
 
       // Escuchamos lo que nos dice el Content Script
       port.onMessage.addListener(async (msg: any) => {
-        const message = msg as PortMessage; // Casteo simple
+        const message = msg as PortMessage; 
 
         if (message.type === 'PROGRESS') {
-           // @ts-ignore: Accedemos a count si existe
+           // @ts-ignore
            await actualizarProgreso(keyword, site, 'running', message.count);
         } 
         else if (message.type === 'RESULT') {
-           // @ts-ignore: Accedemos a products si existe
+           // @ts-ignore
            await actualizarProgreso(keyword, site, 'done', message.products.length);
+
+           // --- [MODIFICACIÓN FASE 4] GUARDAR DATOS REALES ---
+           // Guardamos el array completo de productos para usarlo en las estadísticas
+           const storageKey = `products_${site}_${keyword}`;
+           await chrome.storage.local.set({ [storageKey]: message.products });
+           console.log(`[Background] Datos guardados en: ${storageKey}`);
         }
       });
 
@@ -110,6 +116,8 @@ chrome.runtime.onConnect.addListener((port) => {
            }
        }
     });
+
+
   }
 });
 

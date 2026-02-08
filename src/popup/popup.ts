@@ -120,6 +120,19 @@ function renderKeywords() {
         });
     }
 
+
+    // BOTÓN ESTADÍSTICAS (Nuevo para Fase 4)
+    const btnStats = clone.querySelector('.btn-stats') as HTMLButtonElement;
+    if (btnStats) {
+        // Solo habilitar si hay datos (opcional, o dejar que la pag de stats avise)
+        btnStats.addEventListener('click', () => {
+            // Abrimos stats.html pasando la keyword en la URL
+            chrome.tabs.create({ 
+                url: chrome.runtime.getURL(`src/popup/stats.html?keyword=${encodeURIComponent(k.term)}`)
+            });
+        });
+    }
+
     listContainer.appendChild(clone);
   });
 }

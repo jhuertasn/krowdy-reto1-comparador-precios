@@ -27,6 +27,7 @@ export default defineConfig({
       input: Object.assign(
         {
           popup: resolve(__dirname, 'src/popup/popup.html'),
+          stats: resolve(__dirname, 'src/popup/stats.html'),
           background: resolve(__dirname, 'src/background/background.ts')
         },
         collectContentEntries()
